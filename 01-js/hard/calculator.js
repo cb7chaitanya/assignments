@@ -16,6 +16,90 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+
+  add(number) {
+    this.result += number;
+  }
+
+  subtract(number) {
+    this.result -= number;
+  }
+
+  multiply(number) {
+    this.result *= number;
+  }
+
+  divide(number) {
+    if (number === 0) {
+      throw new Error("Cannot divide by zero");
+    }
+    this.result /= number;
+  }
+
+  clear() {
+    this.result = 0;
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  calculate(expression) {
+    const operators = {
+      "+": (a, b) => a + b,
+      "-": (a, b) => a - b,
+      "*": (a, b) => a * b,
+      "/": (a, b) => a / b,
+    };
+
+    let result = 0;
+    let operator = "+";
+    let currentNumber = 0;
+
+    for (let i = 0; i < expression.length; i++) {
+      const char = expression[i];
+
+      if (/\d/.test(char)) {
+        currentNumber = currentNumber * 10 + parseInt(char);
+      } else if (operators[char]) {
+        result = operators[operator](result, currentNumber);
+        operator = char;
+        currentNumber = 0;
+      } else if (char === "(") {
+        const endIndex = findMatchingParenthesisIndex(expression, i);
+        const subExpression = expression.substring(i + 1, endIndex);
+        const subResult = this.calculate(subExpression);
+        result = operators[operator](result, subResult);
+        i = endIndex;
+        operator = "+";
+        currentNumber = 0;
+      }
+    }
+
+    result = operators[operator](result, currentNumber);
+    return result;
+  }
+}
+
+function findMatchingParenthesisIndex(expression, startIndex) {
+  let count = 0;
+  for (let i = startIndex + 1; i < expression.length; i++) {
+    if (expression[i] === "(") {
+      count++;
+    } else if (expression[i] === ")") {
+      if (count === 0) {
+        return i;
+      }
+      count--;
+    }
+  }
+  throw new Error("Mismatched parentheses");
+}
+
+module.exports = Calculator;
 
 module.exports = Calculator;
