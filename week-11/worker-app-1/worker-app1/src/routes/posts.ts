@@ -6,10 +6,11 @@ import {
     updatePost,
     deletePost
 } from "../controllers/posts"
+import { authmiddleware } from "../middleware/user";
 export const postRouter = new Hono();
 
-postRouter.get('/posts', getAllPosts)
-postRouter.post('/posts', createPost)
-postRouter.get('/posts/:id', getPost)
-postRouter.put('/posts/:id', updatePost)
-postRouter.delete('/posts/:id', deletePost)
+postRouter.get('/posts', authmiddleware, getAllPosts)
+postRouter.post('/posts', authmiddleware, createPost)
+postRouter.get('/posts/:id',authmiddleware, getPost)
+postRouter.put('/posts/:id', authmiddleware, updatePost)
+postRouter.delete('/posts/:id', authmiddleware, deletePost)
